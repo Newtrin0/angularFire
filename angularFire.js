@@ -52,7 +52,7 @@ AngularFire.prototype = {
           return;
         }
         self._remoteValue = angular.copy(val);
-        if (angular.equals(val, $scope[name])) {
+        if (angular.equals(val, self._parse(name)($scope))) {
           return;
         }
       }
@@ -82,7 +82,9 @@ AngularFire.prototype = {
         self._initial = false;
         return;
       }
-      var val = JSON.parse(angular.toJson($scope[name]));
+      var val = self._parse(name)($scope);
+      // Don't parse undefined value, if the watched object has been deleted
+      val = val && JSON.parse(angular.toJson(val));
       if (angular.equals(val, self._remoteValue)) {
         return;
       }
